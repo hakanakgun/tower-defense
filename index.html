@@ -4,7 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#07100d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Signal Bastion">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Signal Bastion</title>
+<script>
+(() => {
+  const nav = performance.getEntriesByType?.('navigation')?.[0];
+  const guard = 'signal-bastion-cache-bust';
+  if (nav?.type === 'reload' && sessionStorage.getItem(guard) !== '1') {
+    sessionStorage.setItem(guard, '1');
+    const url = new URL(location.href);
+    url.searchParams.set('_fresh', Date.now().toString(36));
+    location.replace(url.toString());
+    return;
+  }
+  sessionStorage.removeItem(guard);
+})();
+</script>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#ecfff8;background:#07100d;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -17,7 +37,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .stats{display:flex;border-radius:13px;overflow:hidden}.stat{min-width:67px;padding:8px 11px;border-right:1px solid rgba(159,255,217,.1)}.stat:last-child{border-right:0}.stat span{display:block;font-size:9px;color:#83aa9b;text-transform:uppercase;letter-spacing:.13em}.stat strong{display:block;font-size:16px;margin-top:2px}
 .actions{display:flex;gap:6px;pointer-events:auto}.icon,.primary{min-height:43px;border-radius:12px;border:1px solid rgba(159,255,217,.18);background:rgba(8,26,19,.9);padding:0 13px;font-weight:800}.primary{background:#9fffd9;color:#092018;border-color:#9fffd9;letter-spacing:.04em}.primary:disabled{opacity:.45}
 .notice{position:absolute;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);padding:8px 12px;border-radius:999px;font-size:11px;color:#b9dfd0;white-space:nowrap;max-width:42%;overflow:hidden;text-overflow:ellipsis}
-.buildbar{position:absolute;left:50%;bottom:max(9px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:5px;padding:6px;border-radius:15px;pointer-events:auto}.tower-card{display:flex;align-items:center;gap:7px;min-width:100px;min-height:48px;padding:5px 9px;border:1px solid transparent;border-radius:10px;background:transparent;text-align:left}.tower-card.selected{background:rgba(132,255,205,.12);border-color:rgba(132,255,205,.42)}.tower-card:disabled{opacity:.45}.tower-card strong{display:block;font-size:11px;letter-spacing:.04em}.tower-card small{display:block;color:#79a895;font-size:9px;margin-top:2px}.dot{width:23px;height:23px;border-radius:7px;display:block;flex:0 0 23px}.b{background:#83f0c4}.c{background:#ffb36b}.s{background:#a7b6ff}
+.buildbar{position:absolute;left:max(10px,env(safe-area-inset-left));bottom:max(9px,env(safe-area-inset-bottom));transform:none;display:flex;gap:5px;padding:6px;border-radius:15px;pointer-events:auto}.tower-card{display:flex;align-items:center;gap:7px;min-width:100px;min-height:48px;padding:5px 9px;border:1px solid transparent;border-radius:10px;background:transparent;text-align:left}.tower-card.selected{background:rgba(132,255,205,.12);border-color:rgba(132,255,205,.42)}.tower-card:disabled{opacity:.45}.tower-card strong{display:block;font-size:11px;letter-spacing:.04em}.tower-card small{display:block;color:#79a895;font-size:9px;margin-top:2px}.dot{width:23px;height:23px;border-radius:7px;display:block;flex:0 0 23px}.b{background:#83f0c4}.c{background:#ffb36b}.s{background:#a7b6ff}
 .panel{position:absolute;right:max(10px,env(safe-area-inset-right));top:64px;width:204px;padding:12px;border-radius:14px;pointer-events:auto}.panel.hidden,.modal.hidden,.debug.hidden{display:none}.panel-title{font-weight:900;font-size:13px}.panel-sub{color:#83aa9b;font-size:10px;margin-top:3px}.panel-actions{display:flex;gap:5px;margin-top:10px}.panel-actions button{flex:1;min-height:36px;border-radius:9px;border:1px solid #315847;background:#10291f;font-size:10px;font-weight:800}.panel-actions .danger{color:#ff9e96;border-color:#69413d}
 .wave-progress{position:absolute;left:max(10px,env(safe-area-inset-left));top:62px;min-width:124px;padding:7px 10px;border-radius:10px}.wave-progress.hidden{display:none}.wave-progress span{display:block;font-size:9px;font-weight:800;letter-spacing:.08em;color:#b6d9cc}.wave-track{display:block;height:3px;margin-top:5px;border-radius:999px;background:rgba(159,255,217,.12);overflow:hidden}.wave-track b{display:block;width:0;height:100%;border-radius:inherit;background:#83f0c4;transition:width .16s linear}
 .modal{position:absolute;inset:0;display:grid;place-items:center;background:rgba(2,8,6,.72);pointer-events:auto}.modal-card{width:min(350px,82vw);padding:24px;border-radius:20px;text-align:center}.modal-card h1{margin:3px 0 6px;font-size:28px}.modal-card p{margin:0 0 14px;color:#83aa9b}.eyebrow{font-size:10px!important;letter-spacing:.18em;text-transform:uppercase}.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 17px}.result-stat{padding:8px 5px;border-radius:9px;background:rgba(159,255,217,.055);border:1px solid rgba(159,255,217,.1)}.result-stat span{display:block;font-size:8px;line-height:1.2;color:#779f90;text-transform:uppercase;letter-spacing:.07em}.result-stat strong{display:block;margin-top:4px;font-size:15px;color:#eafff7}
@@ -34,7 +54,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <div class="hud">
   <div class="top">
     <div class="stats glass"><div class="stat"><span>Credits</span><strong id="money">$260</strong></div><div class="stat"><span>Lives</span><strong id="lives">20</strong></div><div class="stat"><span>Wave</span><strong id="wave">0/10</strong></div></div>
-    <div class="actions"><button id="pause" class="icon glass" type="button" aria-label="Pause">Ⅱ</button><button id="start" class="primary" type="button">START WAVE 1</button></div>
+    <div class="actions"><button id="refresh-latest" class="icon glass" type="button" aria-label="Load latest version" title="Load latest version">↻</button><button id="pause" class="icon glass" type="button" aria-label="Pause">Ⅱ</button><button id="start" class="primary" type="button">START WAVE 1</button></div>
   </div>
   <div id="notice" class="notice glass">BLASTER selected · tap a green build pad.</div>
   <div id="wave-progress" class="wave-progress glass hidden"><span id="wave-progress-label">WAVE 1 · 0/0</span><i class="wave-track"><b id="wave-progress-fill"></b></i></div>
@@ -43,7 +63,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 </div>
 <div id="modal" class="modal hidden"><div class="modal-card glass"><p class="eyebrow">RUN COMPLETE</p><h1 id="result">VICTORY</h1><p id="result-copy">The bastion held.</p><div class="result-stats"><div class="result-stat"><span>Lives remaining</span><strong id="result-lives">20</strong></div><div class="result-stat"><span>Enemies defeated</span><strong id="result-kills">0</strong></div><div class="result-stat"><span>Credits earned</span><strong id="result-credits">&#36;0</strong></div></div><button id="restart" class="primary">PLAY AGAIN</button></div></div>
 <div class="rotate"><div class="rotate-card glass"><div class="phone">▯</div><strong>Rotate your phone</strong><span>Signal Bastion is designed for landscape play.</span></div></div>
-<aside id="debug" class="debug glass hidden"><strong>DEBUG · v0.3</strong><pre id="debug-stats"></pre><div class="debug-actions"><button id="d-money">+$500</button><button id="d-spawn">Spawn</button><button id="d-kill">Kill all</button><button id="d-wave">Wave</button></div><textarea id="snapshot" rows="4" readonly></textarea></aside>
+<aside id="debug" class="debug glass hidden"><strong>DEBUG · v0.4</strong><pre id="debug-stats"></pre><div class="debug-actions"><button id="d-money">+$500</button><button id="d-spawn">Spawn</button><button id="d-kill">Kill all</button><button id="d-wave">Wave</button></div><textarea id="snapshot" rows="4" readonly></textarea></aside>
 </div>
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
@@ -82,6 +102,8 @@ function updateUI(){const progress=document.querySelector('#wave-progress'),reso
 function showEnd(){const modal=document.querySelector('#modal');modal.classList.remove('hidden');document.querySelector('#result').textContent=state.won?'VICTORY':'BASTION LOST';document.querySelector('#result-copy').textContent=state.won?'All 10 waves cleared.':'The route was breached.';document.querySelector('#result-lives').textContent=state.lives;document.querySelector('#result-kills').textContent=state.kills;document.querySelector('#result-credits').textContent=String.fromCharCode(36)+state.creditsEarned}
 const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();canvas.addEventListener('pointerup',ev=>{const r=canvas.getBoundingClientRect();ptr.x=((ev.clientX-r.left)/r.width)*2-1;ptr.y=-((ev.clientY-r.top)/r.height)*2+1;ray.setFromCamera(ptr,camera);const hits=ray.intersectObjects([...slotMeshes,...towerGroups.values()],true);let pick=null;for(const h of hits){let o=h.object;while(o){if(typeof o.userData.towerId==='number'){pick={tower:o.userData.towerId};break}if(typeof o.userData.slotIndex==='number'){pick={slot:o.userData.slotIndex};break}o=o.parent}if(pick)break}if(!pick){selectTower(null);return}if(pick.tower){selectTower(pick.tower);return}const existing=state.towers.find(t=>t.slot===pick.slot);if(existing){selectTower(existing.id);return}build(pick.slot,state.selectedType);updateUI()});
 document.querySelectorAll('.tower-card').forEach(b=>b.addEventListener('click',()=>{state.selectedType=b.dataset.tower;state.selectedTower=null;selectTower(null);notice(TOWERS[state.selectedType].label.toUpperCase()+' selected · tap a green build pad.');updateUI()}));document.querySelector('#start').addEventListener('click',startWave);document.querySelector('#pause').addEventListener('click',()=>{state.paused=!state.paused;updateUI()});document.querySelector('#upgrade').addEventListener('click',()=>{const t=state.towers.find(x=>x.id===state.selectedTower);if(!t||t.level>=3)return;const c=TOWERS[t.type],cost=c.up[t.level-1];if(state.money<cost)return;state.money-=cost;t.spent+=cost;t.level++;notice(c.label+' upgraded to Level '+t.level+'.');updateRange();updateSlots();updateUI()});document.querySelector('#sell').addEventListener('click',()=>{const i=state.towers.findIndex(x=>x.id===state.selectedTower);if(i<0)return;state.money+=Math.floor(state.towers[i].spent*.6);state.towers.splice(i,1);state.selectedTower=null;selectTower(null);updateRange();updateSlots();updateUI()});document.querySelector('#restart').addEventListener('click',reset);
+function loadLatest(){const url=new URL(location.href);url.searchParams.set('_fresh',Date.now().toString(36));location.replace(url.toString())}
+document.querySelector('#refresh-latest').addEventListener('click',loadLatest);
 const debug=location.search.includes('debug=1');if(debug){document.querySelector('#debug').classList.remove('hidden');document.querySelector('#d-money').onclick=()=>{state.money+=500;updateUI()};document.querySelector('#d-spawn').onclick=()=>spawn('grunt');document.querySelector('#d-kill').onclick=()=>{state.enemies=[];state.queue=[];state.waveResolved=state.waveTotal};document.querySelector('#d-wave').onclick=startWave}
 let last=performance.now(),acc=0,frames=0,fpsTime=last,fps=0;function loop(now){const frame=Math.min((now-last)/1000,.1);last=now;acc+=frame;while(acc>=1/60){update(1/60);acc-=1/60}syncMeshes(frame);updateUI();renderer.render(scene,camera);frames++;if(debug&&now-fpsTime>500){fps=Math.round(frames*1000/(now-fpsTime));frames=0;fpsTime=now;document.querySelector('#debug-stats').textContent='FPS '+fps+'\nFrame '+(frame*1000).toFixed(1)+'ms\nDraw '+renderer.info.render.calls+'\nEnemies '+state.enemies.length+'\nTowers '+state.towers.length;document.querySelector('#snapshot').value=JSON.stringify({wave:state.wave,money:state.money,lives:state.lives,enemies:state.enemies.length,towers:state.towers.length,fps})}requestAnimationFrame(loop)}requestAnimationFrame(loop);
 </script>
